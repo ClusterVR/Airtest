@@ -52,7 +52,7 @@ class Javacap(Yosemite, BaseCap):
                 break
             if b"Address already in use" in line:
                 raise ScreenError("javacap server setup error: %s" % line)
-        reg_cleanup(kill_proc, proc)
+        reg_cleanup(kill_proc, proc, communicate=False)
         return proc, nbsp, localport
 
     @threadsafe_generator

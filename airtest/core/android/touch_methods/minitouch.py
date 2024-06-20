@@ -110,7 +110,7 @@ class Minitouch(BaseTouch):
             kill_proc(p)
             raise RuntimeError("minitouch server quit immediately")
         self.server_proc = p
-        reg_cleanup(kill_proc, self.server_proc)
+        reg_cleanup(kill_proc, self.server_proc, communicate=False)
         return p
 
     def setup_client(self):
@@ -162,8 +162,8 @@ class Minitouch(BaseTouch):
         ny = float(y) * self.max_y / height
         return "%.0f" % nx, "%.0f" % ny
 
-    def teardown(self):
-        super(Minitouch, self).teardown()
+    def teardown(self, communicate=True, timeout=None):
+        super(Minitouch, self).teardown(communicate=communicate, timeout=timeout)
         if self.localport:
             self.adb.remove_forward("tcp:{}".format(self.localport))
             self.localport = None

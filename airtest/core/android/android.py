@@ -4,6 +4,7 @@ import time
 import os
 import shutil
 import warnings
+import subprocess
 from copy import copy
 from airtest import aircv
 from airtest.core.device import Device
@@ -1091,8 +1092,16 @@ class Android(Device):
 
         """
         self.screen_proxy.teardown_stream()
-        self.touch_proxy.teardown()
-        self.rotation_watcher.teardown()
+
+        try:
+            self.touch_proxy.teardown(timeout=15)
+        except subprocess.TimeoutExpired:
+            LOGGING.warning("Timeout when tearing down touch_proxy")
+
+        try:
+            self.rotation_watcher.teardown(timeout=15)
+        except subprocess.TimeoutExpired:
+            LOGGING.warning("Timeout when tearing down rotation_watcher")
 
 
 # Compatible with old code, such as device.minicap

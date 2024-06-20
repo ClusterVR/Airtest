@@ -108,7 +108,7 @@ class AdbTouchImplementation(object):
         duration *= 1000
         self.base_touch.swipe(p1, p2, duration=duration)
 
-    def teardown(self):
+    def teardown(self, communicate=True, timeout=None):
         pass
 
 

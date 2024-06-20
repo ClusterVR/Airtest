@@ -257,7 +257,7 @@ class Minicap(BaseCap):
             stopping = False
         self.cleanup_func.append(s.close)
         self.cleanup_func.append(nbsp.kill)
-        self.cleanup_func.append(partial(kill_proc, proc))
+        self.cleanup_func.append(partial(kill_proc, proc, communicate=False))
         self.cleanup_func.append(partial(self.adb.remove_forward, "tcp:%s" % localport))
         yield stopping
 

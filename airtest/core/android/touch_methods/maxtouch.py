@@ -111,8 +111,8 @@ class Maxtouch(BaseTouch):
         width, height = self.size_info['width'], self.size_info['height']
         return x / width, y / height
 
-    def teardown(self):
-        super(Maxtouch, self).teardown()
+    def teardown(self, communicate=True, timeout=None):
+        super(Maxtouch, self).teardown(communicate=communicate, timeout=timeout)
         if self.localport:
             self.adb.remove_forward("tcp:{}".format(self.localport))
             self.localport = None

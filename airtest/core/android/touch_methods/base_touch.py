@@ -41,7 +41,7 @@ class BaseTouch(object):
         self.size_info = size_info or self.adb.get_display_info()
         self.default_pressure = 50
         self.path_in_android = ""
-        reg_cleanup(self.teardown)
+        reg_cleanup(self.teardown, communicate=False)
 
     @ready_method
     def install_and_setup(self):
@@ -151,7 +151,7 @@ class BaseTouch(object):
         """
         raise NotImplemented
 
-    def teardown(self):
+    def teardown(self, communicate=True, timeout=None):
         """
         Stop the server and client
 
@@ -165,7 +165,7 @@ class BaseTouch(object):
         if self.client:
             self.client.close()
         if self.server_proc:
-            kill_proc(self.server_proc)
+            kill_proc(self.server_proc, communicate=communicate, timeout=timeout)
 
     def transform_xy(self, x, y):
         """

@@ -25,7 +25,7 @@ class RotationWatcher(object):
         self._t_kill_event = threading.Event()
         self.current_orientation = None
         self.path_in_android = "/data/local/tmp/" + os.path.basename(ROTATIONWATCHER_JAR)
-        reg_cleanup(self.teardown)
+        reg_cleanup(self.teardown, communicate=False)
 
     @on_method_ready('start')
     def get_ready(self):
@@ -89,10 +89,10 @@ class RotationWatcher(object):
         self.ow_proc = p
         return p
 
-    def teardown(self):
+    def teardown(self, communicate=True, timeout=None):
         self._t_kill_event.set()
         if self.ow_proc:
-            kill_proc(self.ow_proc)
+            kill_proc(self.ow_proc, communicate=communicate, timeout=timeout)
         if self.nbsp:
             self.nbsp.kill()
         self.ow_callback = []
