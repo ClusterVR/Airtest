@@ -9,6 +9,9 @@ from six import string_types
 from six.moves import queue
 from six.moves.urllib.parse import parse_qsl, urlparse
 
+from airtest.utils.logger import get_logger
+
+LOGGING = get_logger(__name__)
 
 def split_cmd(cmds):
     """
@@ -76,11 +79,14 @@ def kill_proc(proc, communicate=True, timeout=None):
     Returns:
 
     """
+    LOGGING.debug(f'killing {proc.args} (communicate={communicate}, timeout={timeout})')
     proc.kill()
     # https://bugs.python.org/issue35182
     # 部分低版本的python中，重复关闭io流可能会导致异常报错，因此需要额外加入判断closed
     if communicate and proc.stdout and not proc.stdout.closed:
+        LOGGING.debug(f'reading until EOF... (timeout={timeout})')
         proc.communicate(timeout=timeout)
+    LOGGING.debug(f'killed {proc.args}')
 
 # atexit.register(_cleanup)
 
