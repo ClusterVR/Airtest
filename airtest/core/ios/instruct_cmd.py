@@ -46,6 +46,9 @@ class InstructHelper(object):
         # 3. Use python (low efficiency): python relay.py -t 5100:5100
         system = platform.system()
         iproxy_path = DEFAULT_IPROXY_PATH.get(system)
+        iproxy_env_path = shutil.which("iproxy")
+        LOGGING.debug(f"[builtin_iproxy_path] default iproxy path: {iproxy_path}")
+        LOGGING.debug(f"[builtin_iproxy_path] shutil.which(\"iproxy\"): {iproxy_env_path}")
         if iproxy_path:
             if system == "Darwin":
                 make_file_executable(iproxy_path)
@@ -113,6 +116,7 @@ class InstructHelper(object):
         if not self.usb_device:
             raise LocalDeviceError("Currently only supports port forwarding for locally connected iOS devices")
         local_port = random.randint(11111, 20000)
+        LOGGING.debug(f"[setup_proxy] local_port: {local_port}, device_port: {device_port}")
         self.do_proxy(local_port, device_port)
         return local_port, device_port
 
@@ -132,8 +136,10 @@ class InstructHelper(object):
         if not self.usb_device:
             raise LocalDeviceError("Currently only supports port forwarding for locally connected iOS devices")
         proxy_process = self.builtin_iproxy_path() or shutil.which("tidevice")
+        LOGGING.debug(f"[do_proxy] proxy_process: {proxy_process}")
         if proxy_process:
             cmds = [proxy_process, "-u", self._udid, str(port), str(device_port)]
+            LOGGING.debug(f"[do_proxy] cmds: {cmds}")
         else:
             # Port forwarding using python
             self.do_proxy_usbmux(port, device_port)
@@ -149,6 +155,7 @@ class InstructHelper(object):
             creationflags=SUBPROCESS_FLAG
         )
         # something like port binding fail
+        LOGGING.debug(f"[do_proxy] time.sleep(5) after subprocess.Popen")
         time.sleep(5)
 
         if proc.poll() is not None:
